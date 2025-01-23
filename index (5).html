@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login System</title>
+  <style>
+    /* Global reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* Full-screen body with background image */
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: url('https://www.w3schools.com/w3images/forestbridge.jpg') no-repeat center center fixed;
+      background-size: cover;
+      color: #fff;
+    }
+
+    /* Main container (centered) */
+    .container {
+      width: 400px;
+      padding: 50px;
+      border-radius: 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white */
+      text-align: center;
+      transition: transform 0.3s ease-in-out;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      font-size: 26px;
+      color: #333;
+    }
+
+    .textbox {
+      margin-bottom: 20px;
+    }
+
+    .textbox input {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      border: 2px solid #ddd;
+      border-radius: 5px;
+      transition: border-color 0.3s;
+    }
+
+    .textbox input:focus {
+      border-color: #00b4db;
+      outline: none;
+    }
+
+    .btn-container {
+      display: flex;
+      justify-content: center;
+    }
+
+    .login-btn, .back-btn {
+      background-color: #00b4db;
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: transform 0.3s ease-in-out;
+      margin-top: 10px;
+    }
+
+    .login-btn:hover, .back-btn:hover {
+      transform: scale(1.1);
+    }
+
+    .error-message, .success-message {
+      color: red;
+      margin-top: 10px;
+      display: none;
+    }
+
+    .back-btn {
+      background-color: #f44336;
+    }
+
+    .search-box {
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .search-box input {
+      padding: 8px;
+      font-size: 16px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      width: 70%;
+    }
+
+    .search-box button {
+      background-color: #00b4db;
+      color: white;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-left: 10px;
+      transition: transform 0.3s ease-in-out;
+    }
+
+    .search-box button:hover {
+      transform: scale(1.1);
+    }
+
+    .user-list {
+      list-style-type: none;
+      padding: 0;
+      margin-top: 20px;
+    }
+
+    .user-list li {
+      padding: 10px;
+      margin: 5px 0;
+      background-color: #f9f9f9;
+      border-radius: 5px;
+    }
+
+    .user-list li span {
+      font-weight: bold;
+    }
+
+    .edit-btn {
+      background-color: #4caf50;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-left: 10px;
+    }
+
+    .edit-btn:hover {
+      background-color: #45a049;
+    }
+
+    /* Keyframes for page transition */
+    @keyframes slideIn {
+      0% {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .container {
+      animation: slideIn 0.5s ease-in-out;
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- Login Page Section -->
+  <div id="login-container" class="container">
+    <h2>Login</h2>
+    <div class="textbox">
+      <input type="text" id="login-username" placeholder="Username">
+    </div>
+    <div class="textbox">
+      <input type="password" id="login-password" placeholder="Password">
+    </div>
+    <button class="login-btn" onclick="login()">Login</button>
+    <p><button onclick="showRegisterPage()">Register here</button></p>
+    <p class="error-message" id="login-error">Invalid username or password</p>
+  </div>
+
+  <!-- Register Page Section -->
+  <div id="register-container" class="container" style="display: none;">
+    <h2>Register</h2>
+    <div class="textbox">
+      <input type="text" id="register-username" placeholder="Username">
+    </div>
+    <div class="textbox">
+      <input type="password" id="register-password" placeholder="Password">
+    </div>
+    <div class="textbox">
+      <input type="password" id="register-confirm-password" placeholder="Confirm Password">
+    </div>
+    <button class="login-btn" onclick="register()">Register</button>
+    <p class="error-message" id="register-error">Please fill all fields correctly</p>
+    <button class="back-btn" onclick="showLoginPage()">Back to Login</button>
+  </div>
+
+  <!-- Student Info Page -->
+  <div id="student-container" class="container" style="display: none;">
+    <h2>Student Information</h2>
+    <div class="textbox">
+      <input type="text" id="student-name" placeholder="Your Name">
+    </div>
+    <div class="textbox">
+      <input type="text" id="student-section" placeholder="Section">
+    </div>
+    <div class="textbox">
+      <input type="text" id="student-sex" placeholder="Sex">
+    </div>
+    <div class="textbox">
+      <input type="number" id="student-age" placeholder="Age">
+    </div>
+    <div class="textbox">
+      <input type="text" id="student-lrn" placeholder="LRN">
+    </div>
+    <div class="textbox">
+      <input type="text" id="student-guidance" placeholder="Record Guidance">
+    </div>
+    <button class="login-btn" onclick="saveStudentInfo()">Save Information</button>
+    <p class="success-message" id="save-success">Information saved successfully!</p>
+    <button class="back-btn" onclick="logout()">Logout</button>
+  </div>
+
+  <!-- Admin Page Section -->
+  <div id="admin-container" class="container" style="display: none;">
+    <h2>Admin Page</h2>
+    <button class="login-btn" onclick="showSavedUsersPage()">View Saved Users</button>
+    <button class="back-btn" onclick="logout()">Logout</button>
+  </div>
+
+  <!-- Saved Users Page Section -->
+  <div id="saved-users-container" class="container" style="display: none;">
+    <h2>View Saved Users</h2>
+
+    <!-- Search Box with Search Button -->
+    <div class="search-box">
+      <input type="text" id="search-input" placeholder="Search by name or LRN">
+      <button onclick="searchUsers()">Search</button>
+    </div>
+
+    <ul id="user-list" class="user-list"></ul>
+
+    <button class="back-btn" onclick="showAdminPage()">Back</button>
+  </div>
+
+  <!-- Edit User Page Section -->
+  <div id="edit-user-container" class="container" style="display: none;">
+    <h2>Edit User Information</h2>
+    <div class="textbox">
+      <input type="text" id="edit-name" placeholder="Name">
+    </div>
+    <div class="textbox">
+      <input type="text" id="edit-section" placeholder="Section">
+    </div>
+    <div class="textbox">
+      <input type="text" id="edit-sex" placeholder="Sex">
+    </div>
+    <div class="textbox">
+      <input type="number" id="edit-age" placeholder="Age">
+    </div>
+    <div class="textbox">
+      <input type="text" id="edit-lrn" placeholder="LRN">
+    </div>
+    <div class="textbox">
+      <input type="text" id="edit-guidance" placeholder="Record Guidance">
+    </div>
+    <button class="login-btn" onclick="saveEditedInfo()">Save Changes</button>
+    <button class="back-btn" onclick="showSavedUsersPage()">Back to Saved Users</button>
+  </div>
+
+  <script>
+    // Define the admin credentials
+    const adminCredentials = { username: 'admin', password: 'admin123' };
+
+    // Helper to get users from localStorage
+    function getUsers() {
+      const users = JSON.parse(localStorage.getItem('users')) || [];
+      return users;
+    }
+
+    function saveUsers(users) {
+      localStorage.setItem('users', JSON.stringify(users));
+    }
+
+    // Show Login Page
+    function showLoginPage() {
+      document.getElementById('login-container').style.display = 'block';
+      document.getElementById('register-container').style.display = 'none';
+      document.getElementById('student-container').style.display = 'none';
+      document.getElementById('admin-container').style.display = 'none';
+      document.getElementById('saved-users-container').style.display = 'none';
+      document.getElementById('edit-user-container').style.display = 'none';
+    }
+
+    // Show Register Page
+    function showRegisterPage() {
+      document.getElementById('login-container').style.display = 'none';
+      document.getElementById('register-container').style.display = 'block';
+    }
+
+    // Register User
+    function register() {
+      const username = document.getElementById('register-username').value;
+      const password = document.getElementById('register-password').value;
+      const confirmPassword = document.getElementById('register-confirm-password').value;
+
+      // Validation
+      if (!username || !password || !confirmPassword) {
+        document.getElementById('register-error').textContent = 'Please fill all fields correctly';
+        document.getElementById('register-error').style.display = 'block';
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        document.getElementById('register-error').textContent = 'Passwords do not match';
+        document.getElementById('register-error').style.display = 'block';
+        return;
+      }
+
+      const users = getUsers();
+      if (users.some(user => user.username === username)) {
+        document.getElementById('register-error').textContent = 'Username already exists';
+        document.getElementById('register-error').style.display = 'block';
+        return;
+      }
+
+      users.push({ username, password });
+      saveUsers(users);
+      alert('Registration successful! Please log in.');
+      showLoginPage();
+    }
+
+    // Login User
+    function login() {
+      const username = document.getElementById('login-username').value;
+      const password = document.getElementById('login-password').value;
+
+      // Check for admin credentials
+      if (username === adminCredentials.username && password === adminCredentials.password) {
+        showAdminPage();
+        return;
+      }
+
+      const users = getUsers();
+      const user = users.find(u => u.username === username && u.password === password);
+
+      if (user) {
+        showStudentPage();
+      } else {
+        document.getElementById('login-error').style.display = 'block';
+      }
+    }
+
+    // Show Student Page
+    function showStudentPage() {
+      document.getElementById('student-container').style.display = 'block';
+      document.getElementById('login-container').style.display = 'none';
+      document.getElementById('admin-container').style.display = 'none';
+      document.getElementById('register-container').style.display = 'none';
+    }
+
+    // Save Student Info
+    function saveStudentInfo() {
+      const name = document.getElementById('student-name').value;
+      const section = document.getElementById('student-section').value;
+      const sex = document.getElementById('student-sex').value;
+      const age = document.getElementById('student-age').value;
+      const lrn = document.getElementById('student-lrn').value;
+      const guidance = document.getElementById('student-guidance').value;
+
+      const users = getUsers();
+      const currentUser = users.find(user => user.username === document.getElementById('login-username').value);
+
+      if (currentUser) {
+        currentUser.studentData = { name, section, sex, age, lrn, guidance };
+        saveUsers(users);
+
+        document.getElementById('save-success').style.display = 'block';
+        document.getElementById('student-name').value = '';
+        document.getElementById('student-section').value = '';
+        document.getElementById('student-sex').value = '';
+        document.getElementById('student-age').value = '';
+        document.getElementById('student-lrn').value = '';
+        document.getElementById('student-guidance').value = '';
+      }
+    }
+
+    // Logout
+    function logout() {
+      showLoginPage();
+    }
+
+    // Admin page - view saved users
+    function showAdminPage() {
+      document.getElementById('admin-container').style.display = 'block';
+      document.getElementById('login-container').style.display = 'none';
+      document.getElementById('saved-users-container').style.display = 'none';
+      document.getElementById('edit-user-container').style.display = 'none';
+    }
+
+    // Show Saved Users Page
+    function showSavedUsersPage() {
+      document.getElementById('saved-users-container').style.display = 'block';
+      document.getElementById('admin-container').style.display = 'none';
+      document.getElementById('edit-user-container').style.display = 'none';
+
+      const users = getUsers();
+      const userList = document.getElementById('user-list');
+      userList.innerHTML = '';
+
+      users.forEach(user => {
+        if (user.studentData) {
+          const li = document.createElement('li');
+          li.innerHTML = `<span>${user.username}</span> - ${user.studentData.name}
+                          <button class="edit-btn" onclick="editUser('${user.username}')">Edit</button>`;
+          userList.appendChild(li);
+        }
+      });
+    }
+
+    // Search Users
+    function searchUsers() {
+      const query = document.getElementById('search-input').value.toLowerCase();
+      const users = getUsers();
+      const filteredUsers = users.filter(user => {
+        return user.username.toLowerCase().includes(query) ||
+               (user.studentData && user.studentData.lrn.includes(query));
+      });
+
+      const userList = document.getElementById('user-list');
+      userList.innerHTML = '';
+
+      filteredUsers.forEach(user => {
+        if (user.studentData) {
+          const li = document.createElement('li');
+          li.innerHTML = `<span>${user.username}</span> - ${user.studentData.name}
+                          <button class="edit-btn" onclick="editUser('${user.username}')">Edit</button>`;
+          userList.appendChild(li);
+        }
+      });
+    }
+
+    // Edit User Information
+    function editUser(username) {
+      const users = getUsers();
+      const user = users.find(u => u.username === username);
+
+      if (user && user.studentData) {
+        document.getElementById('edit-name').value = user.studentData.name;
+        document.getElementById('edit-section').value = user.studentData.section;
+        document.getElementById('edit-sex').value = user.studentData.sex;
+        document.getElementById('edit-age').value = user.studentData.age;
+        document.getElementById('edit-lrn').value = user.studentData.lrn;
+        document.getElementById('edit-guidance').value = user.studentData.guidance;
+        
+        document.getElementById('edit-user-container').style.display = 'block';
+        document.getElementById('saved-users-container').style.display = 'none';
+      }
+    }
+
+    // Save Edited Info
+    function saveEditedInfo() {
+      const name = document.getElementById('edit-name').value;
+      const section = document.getElementById('edit-section').value;
+      const sex = document.getElementById('edit-sex').value;
+      const age = document.getElementById('edit-age').value;
+      const lrn = document.getElementById('edit-lrn').value;
+      const guidance = document.getElementById('edit-guidance').value;
+
+      const users = getUsers();
+      const currentUser = users.find(user => user.username === document.getElementById('login-username').value);
+
+      if (currentUser) {
+        currentUser.studentData = { name, section, sex, age, lrn, guidance };
+        saveUsers(users);
+        
+        alert('User information updated successfully');
+        showSavedUsersPage();
+      }
+    }
+  </script>
+
+</body>
+</html>
